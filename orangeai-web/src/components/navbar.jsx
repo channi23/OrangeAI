@@ -1,39 +1,35 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from "react-router-dom";
+import { useLayoutEffect, useRef } from "react";
+import { gsap } from "gsap";
 
-function Navbar() {
+export default function Navbar() {
+  const bar = useRef(null);
+  useLayoutEffect(() => {
+    gsap.fromTo(
+      bar.current,
+      { y: -20, autoAlpha: 0 },
+      { y: 0, autoAlpha: 1, duration: 0.6, ease: "power3.out" }
+    );
+  }, []);
+
+  const link = ({ isActive }) =>
+    `px-3 py-1 rounded-full text-sm transition ${
+      isActive ? "bg-white/15" : "hover:bg-white/10"
+    }`;
+
   return (
-    <nav className="bg-orange-500 text-white px-6 py-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-xl font-bold tracking-wide">OrangeAI</h1>
-        <ul className="flex space-x-6 text-lg">
-          <li>
-            <Link
-              to="/"
-              className="hover:text-orange-200 transition-all duration-300 ease-in-out"
-            >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/upload"
-              className="hover:text-orange-200 transition-all duration-300 ease-in-out"
-            >
-              Upload
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/results"
-              className="hover:text-orange-200 transition-all duration-300 ease-in-out"
-            >
-              Results
-            </Link>
-          </li>
-        </ul>
+    <nav
+      ref={bar}
+      className="sticky top-0 z-40 backdrop-blur-xl bg-black/30 border-b border-white/10"
+    >
+      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+        <Link to="/" className="font-black tracking-tight">ORANGEAI</Link>
+        <div className="flex items-center gap-1">
+          <NavLink to="/" className={link} end>Home</NavLink>
+          <NavLink to="/upload" className={link}>Upload</NavLink>
+          <NavLink to="/results" className={link}>Results</NavLink>
+        </div>
       </div>
     </nav>
   );
 }
-
-export default Navbar;

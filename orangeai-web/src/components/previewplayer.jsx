@@ -1,22 +1,7 @@
-function PreviewPlayer({ originalSrc, dubbedSrc }) {
+export default function PreviewPlayer() {
   return (
-    <div className="flex flex-col md:flex-row gap-6 mt-6 justify-center">
-      <div className="flex-1 text-center">
-        <h3 className="text-lg font-semibold mb-2">Original Video</h3>
-        <video controls className="w-full max-w-md mx-auto rounded shadow">
-          <source src={originalSrc} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      <div className="flex-1 text-center">
-        <h3 className="text-lg font-semibold mb-2">Dubbed Video</h3>
-        <video controls className="w-full max-w-md mx-auto rounded shadow">
-          <source src={dubbedSrc} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
+    <div className="aspect-video w-full rounded-2xl border border-white/10 bg-black/40 grid place-items-center">
+      <div className="text-white/60">(Video preview placeholder)</div>
     </div>
   );
 }
-
-export default PreviewPlayer;
