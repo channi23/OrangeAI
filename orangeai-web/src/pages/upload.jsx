@@ -1,6 +1,7 @@
 import { useRef, useState, useLayoutEffect } from "react";
 import { gsap } from "gsap";
 import { Link, useNavigate } from "react-router-dom";
+import { apiUrl } from "../lib/api.js";
 
 export default function Upload() {
   const boxRef = useRef(null);
@@ -24,8 +25,33 @@ export default function Upload() {
     if (f) setFile(f);
   };
 
-  const start = () => {
-    nav("/results", { state: { demo: true, name: file?.name || "demo.mp4" } });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const start = async () => {
+    if (!file) {
+      nav("/results", { state: { demo: true, name: "demo.mp4" } });
+      return;
+    }
+
+    const form = new FormData();
+    form.append("file", file);
+    try {
+      setIsSubmitting(true);
+      setError("");
+      const res = await fetch(apiUrl("/api/upload"), {
+        method: "POST",
+        body: form,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Upload failed");
+      nav("/results", { state: { jobId: data.jobId, name: file.name } });
+    } catch (e) {
+      setError(e?.message || "Upload failed");
+    }
+    finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -72,7 +98,10 @@ export default function Upload() {
                   <option>English</option>
                 </select>
               </div>
-              <button className="btn-primary w-full" onClick={start}>Process</button>
+              {error && <div className="text-red-400 text-xs">{error}</div>}
+              <button className="btn-primary w-full disabled:opacity-50" onClick={start} disabled={isSubmitting}>
+                {isSubmitting ? "Uploading..." : "Process"}
+              </button>
               <Link to="/" className="text-xs opacity-70 hover:opacity-100">← back to home</Link>
             </div>
           </div>
